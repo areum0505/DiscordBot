@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
-import lol
+from lol import lol
 
 bot = commands.Bot(command_prefix='$')  # 접두사가 '$'
+_lol = lol()
 
 
 @bot.event
@@ -17,12 +18,13 @@ async def hello(ctx):  # '$hello'라는 메시지를 보냈을 때 @ Hello!를 �
 
 @bot.command(name='롤')
 async def random_lol(ctx, *, text=''):
-    result = lol.getResult(text)
+    result = _lol.getResult(text)
     embed = discord.Embed(title="결과", color=discord.Color.green())
     for key, value in result.items():
-        if value != '':
+        if value != '' and key != '이미지':
             embed.add_field(name=key, value=value, inline=True)
     if embed.fields:
+        embed.set_thumbnail(url=result['이미지'])
         await ctx.send(embed=embed)
     else:
         await ctx.send("잘못된 명령어입니다.")
@@ -34,4 +36,4 @@ async def on_command_error(ctx, exception):
         await ctx.send("잘못된 명령어입니다.")
 
 
-bot.run('ODYxNDMwMjIwNzQ0NDI1NTAz.YOJraQ.L7c5IyCo3qQQfQ389OoQpkt61Ow')
+bot.run('token')
